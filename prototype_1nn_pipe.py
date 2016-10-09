@@ -8,7 +8,8 @@ def get_full_distance_matrix(points):
         for i in range(j+1,len(points)):
             p2 = points[i]
             print j,i
-            distances.append(tangentDistance(p1,p2))
+            tangentDistance(p1,p2)
+            tangentDistance(p2,p1)
     return distances
 
 def load_data():

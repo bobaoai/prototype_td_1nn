@@ -408,10 +408,10 @@ def tangentDistance(imageOne, imageTwo, height=28, width=28, choice=[1, 1, 1, 1,
     dist=calculateDistance(imageOne, imageTwo, tangents, numTangentsRemaining, height, width)
 
     # print dist
-    for i in xrange(len(tangents)):
-        print len(tangents[i])
-        for j in xrange(10):
-            print tangents[i][j]
+    # for i in xrange(len(tangents)):
+    #     print len(tangents[i])
+    #     for j in xrange(10):
+    #         print tangents[i][j]
 
     del tangents
 
@@ -467,10 +467,10 @@ def twoSidedTangentDistance(imageOne, imageTwo, height=28, width=28, choice=[1,1
     tangents=tangents1+tangents2
     # find the orthonormal tangent subspace
     numTangentsRemaining, tangents = normalizeTangents(tangents, 2*numTangents, height, width)
-
+    print numTangentsRemaining
     # determine the distance to the closest point in the subspace
-    dist1=calculateDistance(imageOne, imageTwo, tangents, numTangentsRemaining, height, width)
-    print dist1
+    dist=calculateDistance(imageOne, imageTwo, tangents, numTangentsRemaining, height, width)
+    print dist
     # dist2=calculateDistance(imageTwo, imageOne, tangents2+tangents1, numTangentsRemaining, height, width)
     # print dist2
 
@@ -499,8 +499,8 @@ if __name__ == '__main__':
     # label = mndata.train_labels[0]
     # print len(mndata.train_images[0])
     # print mndata.train_labels[3], mndata.train_labels[6]
-    # print tangentDistance(mndata.train_images[3], mndata.train_images[6])
-    # print tangentDistance(mndata.train_images[6], mndata.train_images[3])
-    twoSidedTangentDistance(mndata.train_images[3], mndata.train_images[6])
-    twoSidedTangentDistance(mndata.train_images[6], mndata.train_images[3])
+    print tangentDistance(mndata.train_images[3], mndata.train_images[6])
+    print tangentDistance(mndata.train_images[6], mndata.train_images[3])
+    # twoSidedTangentDistance(mndata.train_images[3], mndata.train_images[59])
+    # twoSidedTangentDistance(mndata.train_images[59], mndata.train_images[3])
 
