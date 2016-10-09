@@ -1,3 +1,5 @@
+#copy right: cited from https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/shape/sc_digits.html
+
 from mnist import MNIST
 from math import *
 from pyclust import *
