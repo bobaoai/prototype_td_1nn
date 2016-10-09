@@ -17,10 +17,10 @@ def tdIndex(y, x, width):
     return y * width + x
 
 
-#
 
 
 def orthonormalizePzero(A, num, dim):
+    print num, dim
     # A is tangents
     # calculates an orthonormal basis using Gram-Schmidt
     # returns 0 if basis can be found, 1 otherwise
@@ -111,7 +111,34 @@ def orthonormalizePzero(A, num, dim):
 #
 #     return retval
 
+def orthonormalize(A, num, dim):
+     # calculates an orthonormal basis using Gram-Schmidt
+     # returns 0 if basis can be found, 1 otherwise
 
+    for n in xrange(num):
+        A_n=A[n]
+        for m in xrange(n):
+            A_m=A[m]
+            projection=0.0
+            for d in range(0, dim, 1):
+                projection+=A_n[d]*A_m[d]
+            for d in xrange(dim):
+                projection-=A_n[d]*A_m[d]
+
+        # normalize
+        norm=0.0
+        for d in xrange(dim):
+            tmp=A_n[d]
+            norm+=tmp*tmp
+        if (norm<ortho_singular_threshold) :
+            retval=1
+        norm=1.0/sqrt(norm)
+        for d in xrange(dim):
+            A_n[d]*=norm
+    
+
+    return A
+ 
 
 def calculateTangents(image, tangents, numTangents, height=28, width=28, choice=[1, 1, 1, 1, 1, 1, 0, 0, 0],
                       background=0.0):
@@ -354,16 +381,16 @@ def tangentDistance(imageOne, imageTwo, height=28, width=28, choice=[1, 1, 1, 1,
     dist = []
 
     size = width * height
-    print maxNumTangents
+    # print maxNumTangents
     for i in xrange(maxNumTangents):
         if choice[i] > 0:
-            print "yes"
+            # print "yes"
             numTangents += 1
 
     # tangents is a list with numTangents's length
     tangents = [0] * numTangents
 
-    print len(tangents)
+    # print len(tangents)
     # assert(tangents)
 
     # tangents have many one-arrays, with length of numTangents
@@ -380,7 +407,7 @@ def tangentDistance(imageOne, imageTwo, height=28, width=28, choice=[1, 1, 1, 1,
     # determine the distance to the closest point in the subspace
     dist=calculateDistance(imageOne, imageTwo, tangents, numTangentsRemaining, height, width)
 
-    print dist
+    # print dist
     for i in xrange(len(tangents)):
         print len(tangents[i])
         for j in xrange(10):
@@ -431,6 +458,8 @@ def twoSidedTangentDistance(imageOne, imageTwo, height=28, width=28, choice=[1,1
         tangents[i]=[0.0]*size
         # assert(tangents[i]>0)
     
+    # numTangents, tangents1 = calculateTangents(imageTwo, tangents[:numTangents], numTangents, height, width, choice, background)
+    # numTangents, tangents2 = calculateTangents(imageOne, tangents[numTangents:], numTangents, height, width, choice, background)
 
     # determine the tangents of the images
     numTangents,tangents1=calculateTangents(imageOne, tangents[:numTangents], numTangents, height, width, choice, background)
@@ -440,18 +469,21 @@ def twoSidedTangentDistance(imageOne, imageTwo, height=28, width=28, choice=[1,1
     numTangentsRemaining, tangents = normalizeTangents(tangents, 2*numTangents, height, width)
 
     # determine the distance to the closest point in the subspace
-    dist=calculateDistance(imageOne, imageTwo, tangents, numTangentsRemaining, height, width)
+    dist1=calculateDistance(imageOne, imageTwo, tangents, numTangentsRemaining, height, width)
+    print dist1
+    # dist2=calculateDistance(imageTwo, imageOne, tangents2+tangents1, numTangentsRemaining, height, width)
+    # print dist2
 
 
     del tangents
-    print dist
+    # print dist
     return dist
 
 
 def normalizeTangents(tangents, numTangents, height, width):
     size = height * width
 
-    tangents = orthonormalizePzero(tangents, numTangents, size)
+    tangents = orthonormalize(tangents, numTangents, size)
 
     # here we always return the original number of tangents dimensions
     # "lost" in the normalization are set to zero vectors this is not
@@ -463,9 +495,12 @@ def normalizeTangents(tangents, numTangents, height, width):
 if __name__ == '__main__':
     mndata = MNIST('/Users/apple/git/python-mnist/data')
     mndata.load_training()
-    image = mndata.train_images[0]
-    label = mndata.train_labels[0]
-    print len(mndata.train_images[0])
-    tangentDistance(mndata.train_images[0], mndata.train_images[1])
-    twoSidedTangentDistance(mndata.train_images[0], mndata.train_images[1])
+    # image = mndata.train_images[0]
+    # label = mndata.train_labels[0]
+    # print len(mndata.train_images[0])
+    # print mndata.train_labels[3], mndata.train_labels[6]
+    # print tangentDistance(mndata.train_images[3], mndata.train_images[6])
+    # print tangentDistance(mndata.train_images[6], mndata.train_images[3])
+    twoSidedTangentDistance(mndata.train_images[3], mndata.train_images[6])
+    twoSidedTangentDistance(mndata.train_images[6], mndata.train_images[3])
 
