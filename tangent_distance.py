@@ -20,7 +20,7 @@ def tdIndex(y, x, width):
 
 
 def orthonormalizePzero(A, num, dim):
-    print num, dim
+    # print num, dim
     # A is tangents
     # calculates an orthonormal basis using Gram-Schmidt
     # returns 0 if basis can be found, 1 otherwise
@@ -167,7 +167,7 @@ def calculateTangents(image, tangents, numTangents, height=28, width=28, choice=
 
     offsetW = 0.5 - factorW
     factorW = 1.0 / factorW
-    print "factorW" ,factorW
+    # print "factorW" ,factorW
     factorH = height * 0.5
     offsetH = 0.5 - factorH
     factorH = 1.0 / factorH
@@ -468,10 +468,10 @@ def twoSidedTangentDistance(imageOne, imageTwo, height=28, width=28, choice=[1,1
     tangents=tangents1+tangents2
     # find the orthonormal tangent subspace
     numTangentsRemaining, tangents = normalizeTangents(tangents, 2*numTangents, height, width)
-    print numTangentsRemaining
+    # print numTangentsRemaining
     # determine the distance to the closest point in the subspace
     dist=calculateDistance(imageOne, imageTwo, tangents, numTangentsRemaining, height, width)
-    print dist
+    # print dist
     # dist2=calculateDistance(imageTwo, imageOne, tangents2+tangents1, numTangentsRemaining, height, width)
     # print dist2
 
