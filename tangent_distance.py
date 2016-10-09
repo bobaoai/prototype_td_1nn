@@ -123,7 +123,7 @@ def orthonormalize(A, num, dim):
             for d in range(0, dim, 1):
                 projection+=A_n[d]*A_m[d]
             for d in xrange(dim):
-                projection-=A_n[d]*A_m[d]
+                A_n[d]-=projection*A_m[d]
 
         # normalize
         norm=0.0
@@ -164,9 +164,10 @@ def calculateTangents(image, tangents, numTangents, height=28, width=28, choice=
     # maxdim =
 
     factorW = width * 0.5
+
     offsetW = 0.5 - factorW
     factorW = 1.0 / factorW
-
+    print "factorW" ,factorW
     factorH = height * 0.5
     offsetH = 0.5 - factorH
     factorH = 1.0 / factorH
@@ -181,7 +182,7 @@ def calculateTangents(image, tangents, numTangents, height=28, width=28, choice=
         ind = tdIndex(k, 0, width)
         x1[ind] = halfbg - image[ind + 1] * 0.5
         # # other columns */
-        for j in xrange(width - 1):
+        for j in range(1, width - 1, 1):
             ind = tdIndex(k, j, width)
             x1[ind] = (image[ind - 1] - image[ind + 1]) * 0.5
 
@@ -196,14 +197,14 @@ def calculateTangents(image, tangents, numTangents, height=28, width=28, choice=
         x1[j] = templatefactor2 * x1[j] + templatefactor1 * x1[j + width]
 
     # # other lines */
-    for k in xrange(height - 1):
+    for k in range(1, height - 1, 1):
         for j in xrange(width):
             ind = tdIndex(k, j, width)
             tp = x1[ind]
             x1[ind] = templatefactor1 * tmp[j] + templatefactor2 * x1[ind] + templatefactor1 * x1[ind + width]
             tmp[j] = tp
 
-            #   # last line */
+    # last line */
     for j in xrange(width):
         ind = tdIndex(height - 1, j, width)
         x1[ind] = templatefactor1 * tmp[j] + templatefactor2 * x1[ind]
@@ -221,7 +222,7 @@ def calculateTangents(image, tangents, numTangents, height=28, width=28, choice=
             ind = tdIndex(k, j, width)
             x1[ind] += templatefactor3 * image[ind - 2]
 
-    for j in range(width - 2):
+    for j in xrange(width - 2):
         for k in xrange(height):
             ind = tdIndex(k, j, width)
             x1[ind] -= templatefactor3 * image[ind + 2]
@@ -234,11 +235,11 @@ def calculateTangents(image, tangents, numTangents, height=28, width=28, choice=
 
     # x2 shift along height */
     # first use mask 1 0 -1 */
-    for j in range(width):
+    for j in xrange(width):
         # first line */
         x2[j] = halfbg - image[j + width] * 0.5
         # other lines */
-        for k in xrange(height - 1):
+        for k in range(1,height - 1, 1):
             ind = tdIndex(k, j, width)
             x2[ind] = (image[ind - width] - image[ind + width]) * 0.5
 
@@ -248,21 +249,21 @@ def calculateTangents(image, tangents, numTangents, height=28, width=28, choice=
 
     # now compute 3x3 template */
     # first column */
-    for j in range(height):
+    for j in xrange(height):
         ind = tdIndex(j, 0, width)
         tmp[j] = x2[ind]
         x2[ind] = templatefactor2 * x2[ind] + templatefactor1 * x2[ind + 1]
 
     # other columns */
-    for k in range(width - 1):
-        for j in range(height):
+    for k in range(1, width - 1, 1):
+        for j in xrange(height):
             ind = tdIndex(j, k, width)
             tp = x2[ind]
             x2[ind] = templatefactor1 * tmp[j] + templatefactor2 * x2[ind] + templatefactor1 * x2[ind + 1]
             tmp[j] = tp
 
     # last column */
-    for j in range(height):
+    for j in xrange(height):
         ind = tdIndex(j, width - 1, width)
         x2[ind] = templatefactor1 * tmp[j] + templatefactor2 * x2[ind]
 
@@ -273,17 +274,17 @@ def calculateTangents(image, tangents, numTangents, height=28, width=28, choice=
             x2[ind] += templatefactor3 * background
 
     for j in range(2, height, 1):
-        for k in range(width):
+        for k in xrange(width):
             ind = tdIndex(j, k, width)
             x2[ind] += templatefactor3 * image[ind - 2 * width]
 
     for j in xrange(height - 2):
-        for k in range(width):
+        for k in xrange(width):
             ind = tdIndex(j, k, width)
             x2[ind] -= templatefactor3 * image[ind + 2 * width]
 
     for j in range(height - 2, height, 1):
-        for k in range(width):
+        for k in xrange(width):
             ind = tdIndex(j, k, width)
             x2[ind] -= templatefactor3 * background
 
@@ -414,7 +415,7 @@ def tangentDistance(imageOne, imageTwo, height=28, width=28, choice=[1, 1, 1, 1,
     #         print tangents[i][j]
 
     del tangents
-
+    print dist
     return dist
 
 def calculateDistance(imageOne, imageTwo, tangents, numTangents, height,width):
@@ -499,8 +500,8 @@ if __name__ == '__main__':
     # label = mndata.train_labels[0]
     # print len(mndata.train_images[0])
     # print mndata.train_labels[3], mndata.train_labels[6]
-    print tangentDistance(mndata.train_images[3], mndata.train_images[6])
-    print tangentDistance(mndata.train_images[6], mndata.train_images[3])
-    # twoSidedTangentDistance(mndata.train_images[3], mndata.train_images[59])
-    # twoSidedTangentDistance(mndata.train_images[59], mndata.train_images[3])
+    # print tangentDistance(mndata.train_images[3], mndata.train_images[6])
+    # print tangentDistance(mndata.train_images[6], mndata.train_images[3])
+    twoSidedTangentDistance(mndata.train_images[3], mndata.train_images[59])
+    twoSidedTangentDistance(mndata.train_images[59], mndata.train_images[3])
 
