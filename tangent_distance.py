@@ -463,6 +463,8 @@ def normalizeTangents(tangents, numTangents, height, width):
 if __name__ == '__main__':
     mndata = MNIST('/Users/apple/git/python-mnist/data')
     mndata.load_training()
+    image = mndata.train_images[0]
+    label = mndata.train_labels[0]
     print len(mndata.train_images[0])
     tangentDistance(mndata.train_images[0], mndata.train_images[1])
     twoSidedTangentDistance(mndata.train_images[0], mndata.train_images[1])
